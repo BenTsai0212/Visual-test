@@ -3,6 +3,13 @@
  * 
  * Smoothly scaling size with the sin() function. 
  */
+import ddf.minim.*;
+
+Minim minim;
+AudioPlayer bell;
+AudioPlayer background;
+
+ 
 int limit = 40;
 int[] sx = new int[limit];
 int[] sy = new int[limit];
@@ -13,8 +20,13 @@ int index = 0;
 void setup() {
   size(1280, 1024);
   
+  minim = new Minim(this);
+  bell = minim.loadFile("Dinner_Chimes.mp3");
+  background = minim.loadFile("Cytus-Bloody Purity.ampg.mp3");
+  
   if(mouseX == 0 && mouseY == 0)
   trigger = 0;
+  //background.loop();
 }
 void draw() {
   frameRate(20);
@@ -23,6 +35,9 @@ void draw() {
  
    
   if(mousePressed) {
+    bell.rewind();
+    bell.play();
+    
     if(index < limit) {
       sx[index] = mouseX;
       sy[index++] = mouseY;
@@ -41,9 +56,9 @@ void draw() {
     {
       if(trigger == 1)
       for(int j=0;j<sum;j++) {
-      line(R*cos(i)+random(-5,5)+sx[j],R*sin(i)+random(-5,5)+sy[j],R*cos(i+1)+random(-5,5)+sx[j],R*sin(i+1)+random(-5,5)+sy[j]);   
+      //line(R*cos(i)+random(-5,5)+sx[j],R*sin(i)+random(-5,5)+sy[j],R*cos(i+1)+random(-5,5)+sx[j],R*sin(i+1)+random(-5,5)+sy[j]);   
       }
-      line(R*cos(i)+random(-5,5)+mouseX,R*sin(i)+random(-5,5)+mouseY,R*cos(i+1)+random(-5,5)+mouseX,R*sin(i+1)+random(-5,5)+mouseY);   
+      //line(R*cos(i)+random(-5,5)+mouseX,R*sin(i)+random(-5,5)+mouseY,R*cos(i+1)+random(-5,5)+mouseX,R*sin(i+1)+random(-5,5)+mouseY);   
     }
     
     for(int i=0;i<sum;i++) {
