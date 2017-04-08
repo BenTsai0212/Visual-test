@@ -16,9 +16,11 @@ int[] sy = new int[limit];
 int trigger;
 int sum = 0; //sum
 int index = 0;
-int seg = 10;
-int segCount = 0;
 
+//track
+int seg = 100; //linear interpolation
+int segCount = 0; 
+int trackObject = 0; //record who is tracking now 
 
 void setup() {
   size(1280, 1024);
@@ -29,7 +31,7 @@ void setup() {
   
   if(mouseX == 0 && mouseY == 0)
   trigger = 0;
-  background.loop();
+//  background.loop();
 }
 void draw() {
   frameRate(20);
@@ -41,12 +43,25 @@ void draw() {
   drawCircle(100f);
   drawTracking();
   drawLine();
-    
+  RandomMove();
     
     //trigger = 0;
 
  // angle += 0.02;
 }
+void RandomMove()
+{  
+  for(int i = 0; i < sum; i++)
+  {
+    float randX = random(2)-1;
+    float randY = random(2)-1;
+    
+    if((sx[i] + randX) < 1280 && (sx[i] + randX) > 0)
+    {sx[i] += randX;}
+    if((sy[i] + randY) < 1024 && (sx[i] + randY) > 0) {sx[i] += randY;}
+  }
+}
+
 void drawLine()
 {
   for(int i=0;i<sum;i++) {
@@ -58,15 +73,30 @@ void drawLine()
 }
 void drawTracking()
 {
-  if(sum>=1);
-    for(int i=1;i<sum;i++) {
-      //fill(102);
-      for(int j=1;j<=seg;j++) {
-        ellipse(sx[i-1]+(sx[i]-sx[i-1])*j/seg,sy[i-1]+(sy[i]-sy[i-1])*j/seg,18,18);
-        //delay(10);
-      }
+  if(sum>=1)
+  {
+    if(trackObject+1 <= sum) //if the next object is exist 
+    {
+      
+      //decide who tracking who
+      int dest;
+      if(trackObject == limit) dest = 0; //if next is first one
+      else dest = trackObject+1;
+      //draw path
+        color(0,192,192,128);
+        ellipse(sx[trackObject]+(sx[dest]-sx[trackObject])*segCount/seg,sy[trackObject]+(sy[dest]-sy[trackObject])*segCount/seg,20,20);
+     //calculate seg index
+        if(segCount+1 <= seg) segCount++;
+        else 
+        {
+          trackObject++;
+          segCount = 0;  
+        }
     }
+    else trackObject = 0;
+  }  
 }
+
 void mouseDetect()
 {
   if(mousePressed) {
